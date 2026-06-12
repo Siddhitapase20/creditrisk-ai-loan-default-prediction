@@ -3,6 +3,27 @@ import pandas as pd
 import numpy as np
 import joblib
 
+st.set_page_config(
+    page_title="CreditRisk AI",
+    page_icon="🏦",
+    layout="wide"
+)
+
+st.markdown("""
+<style>
+.main {
+    padding-top: 1rem;
+}
+
+.stButton > button {
+    width: 100%;
+    height: 3em;
+    border-radius: 10px;
+    font-size: 18px;
+}
+</style>
+""", unsafe_allow_html=True)
+
 # Load Model
 import os
 
@@ -18,58 +39,99 @@ MODEL_PATH = os.path.join(
 model = joblib.load(MODEL_PATH)
 
 st.title("🏦 CreditRisk AI")
-st.subheader("Loan Approval Prediction System")
 
+st.markdown("""
+### Smart Loan Approval Prediction System
+
+Predict loan approval chances using Machine Learning.
+""")
+
+c1, c2, c3 = st.columns(3)
+
+c1.metric("Dataset Size", "614")
+c2.metric("Best Accuracy", "78.86%")
+c3.metric("Model", "Random Forest")
+
+st.sidebar.title("About")
+
+st.sidebar.info("""
+CreditRisk AI predicts loan approval
+using Machine Learning.
+
+Model: Random Forest
+
+Developed by Siddhi Tapase
+""")
 # User Inputs
 
-gender = st.selectbox("Gender", ["Male", "Female"])
+col1, col2 = st.columns(2)
 
-married = st.selectbox("Married", ["Yes", "No"])
+with col1:
 
-dependents = st.selectbox(
-    "Dependents",
-    ["0", "1", "2", "3+"]
-)
+    gender = st.selectbox(
+        "Gender",
+        ["Male","Female"]
+    )
 
-education = st.selectbox(
-    "Education",
-    ["Graduate", "Not Graduate"]
-)
+    married = st.selectbox(
+        "Married",
+        ["Yes","No"]
+    )
 
-self_employed = st.selectbox(
-    "Self Employed",
-    ["Yes", "No"]
-)
+    dependents = st.selectbox(
+        "Dependents",
+        ["0","1","2","3+"]
+    )
 
-property_area = st.selectbox(
-    "Property Area",
-    ["Urban", "Semiurban", "Rural"]
-)
+    education = st.selectbox(
+        "Education",
+        ["Graduate","Not Graduate"]
+    )
 
-credit_history = st.selectbox(
-    "Credit History",
-    [1, 0]
-)
+with col2:
 
-applicant_income = st.number_input(
-    "Applicant Income",
-    min_value=0
-)
+    self_employed = st.selectbox(
+        "Self Employed",
+        ["Yes","No"]
+    )
 
-coapplicant_income = st.number_input(
-    "Coapplicant Income",
-    min_value=0
-)
+    property_area = st.selectbox(
+        "Property Area",
+        ["Urban","Semiurban","Rural"]
+    )
 
-loan_amount = st.number_input(
-    "Loan Amount",
-    min_value=0
-)
+    credit_history = st.selectbox(
+        "Credit History",
+        [1,0]
+    )
 
-loan_term = st.number_input(
-    "Loan Amount Term",
-    min_value=0
-)
+st.subheader("💰 Financial Information")
+
+col3, col4 = st.columns(2)
+
+with col3:
+
+    applicant_income = st.number_input(
+        "Applicant Income",
+        min_value=0
+    )
+
+    coapplicant_income = st.number_input(
+        "Coapplicant Income",
+        min_value=0
+    )
+
+with col4:
+
+    loan_amount = st.number_input(
+        "Loan Amount",
+        min_value=0
+    )
+
+    loan_term = st.number_input(
+        "Loan Amount Term",
+        value=360
+    )
 
 # Predict Button
 
@@ -128,13 +190,19 @@ if st.button("Predict"):
     }])
 
     prediction = model.predict(input_data)
+    probability = model.predict_proba(input_data)[0][1]
 
+    st.metric(
+    "Approval Probability",
+    f"{probability:.2%}"
+)
     probability = model.predict_proba(input_data)[0][1]
     st.write(
     f"Approval Probability: {probability:.2%}"
     )
 
     if prediction[0] == 1:
+        st.balloons()
 
         st.success(
             "✅ Loan Likely Approved"
