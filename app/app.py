@@ -190,31 +190,32 @@ if st.button("Predict"):
     }])
 
     prediction = model.predict(input_data)
+
     probability = model.predict_proba(input_data)[0][1]
 
     st.metric(
-    "Approval Probability",
-    f"{probability:.2%}"
-)
-
-if prediction[0] == 1:
-
-    st.balloons()
-
-    st.success(
-        "✅ Loan Likely Approved"
+        "Approval Probability",
+        f"{probability:.2%}"
     )
 
-    st.info(
-        f"Approval Probability: {probability:.2%}"
-    )
+    if prediction[0] == 1:
 
-else:
+        st.balloons()
 
-    st.error(
-        "❌ Loan Likely Rejected"
-    )
+        st.success(
+            "✅ Loan Likely Approved"
+        )
 
-    st.warning(
-        f"Approval Probability: {probability:.2%}"
-    )
+        st.info(
+            f"Approval Probability: {probability:.2%}"
+        )
+
+    else:
+
+        st.error(
+            "❌ Loan Likely Rejected"
+        )
+
+        st.warning(
+            f"Approval Probability: {probability:.2%}"
+        )
